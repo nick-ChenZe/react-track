@@ -1,4 +1,5 @@
-import * as uuid from 'uuid/v4';
+import {v4} from 'uuid';
+import {TCollect} from '../types';
 
 const getSessionKey = (key: string) => {
     const storedValue = sessionStorage.getItem(key);
@@ -7,9 +8,9 @@ const getSessionKey = (key: string) => {
         return storedValue;
     }
 
-    const newValue = uuid();
+    const newValue = v4();
     sessionStorage.setItem(key, newValue);
     return newValue;
 };
 
-export default (key = 'trackingVisitorSession') => () => ({session: getSessionKey(key)});
+export default (key = 'trackingVisitorSession'): TCollect<{session: string}> => () => ({session: getSessionKey(key)});

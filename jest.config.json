@@ -1,0 +1,8 @@
+{
+    "setupFiles": ["raf/polyfill", "<rootDir>/setupTests.ts"],
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": {
+        "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testRegex": "/test/.*\\.test.(ts|tsx)$"
+}

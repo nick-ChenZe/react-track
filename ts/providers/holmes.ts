@@ -1,5 +1,4 @@
-import {TLocation, Event} from './print';
-import {TrackProvider} from './empty';
+import {Location, Event, TrackProvider} from '../types';
 const HOLMES_SCRIPT_SRC = 'https://hm.baidu.com/hm.js';
 
 /* globals _hmt */
@@ -12,14 +11,14 @@ declare global {
     }
 }
 
-declare type TFormatUrl = (location: TLocation) => string;
+declare type TFormatUrl = (location: Location) => string;
 const formatURL: TFormatUrl = ({pathname, search, hash}) => {
     const parts = [pathname, search ? '?' + search : '', hash ? '#' + hash : ''];
 
     return parts.join('');
 };
 
-declare type THolmes = (site: string) => TrackProvider<[{ location: TLocation }], [Event]>;
+declare type THolmes = (site: string) => TrackProvider<[{ location: Location }], [Event]>;
 const holmes: THolmes = site => {
     // The first time `hm.js`
     return {

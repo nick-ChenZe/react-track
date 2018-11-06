@@ -1,22 +1,7 @@
 import {noop} from 'lodash';
+import {TrackProvider} from '../types';
 
-export enum TrackProviderEnum {
-    install = 'install',
-    uninstall = 'uninstall',
-    trackPageView = 'trackPageView',
-    trackEvent = 'trackEvent',
-}
-
-declare type TBaseTrackProvider = { [key in TrackProviderEnum]?: unknown };
-
-export interface TrackProvider<P extends any[] = [], E extends any[] = []> extends TBaseTrackProvider {
-    install?: () => void;
-    uninstall?: () => void;
-    trackPageView: (...args: P) => void;
-    trackEvent: (...args: E) => void;
-}
-
-const provider: TrackProvider = {
+const provider: TrackProvider<[], []> = {
     install: noop,
     uninstall: noop,
     trackPageView: noop,

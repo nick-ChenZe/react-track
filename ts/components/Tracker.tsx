@@ -1,19 +1,14 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import createEmptyTrackProvider, {TrackProvider, TrackProviderEnum} from '../providers/empty';
-import {TCollect} from '../collect/combineCollects';
-import {TLocation, Event} from '../providers/print';
+import {TrackProvider, TrackProviderEnum, TCollect, Location, Event} from '../types';
 import {createMemoizer} from '../utils';
 import {Provider} from './TrackerContext';
 
-// inner是一个track对象
-const createLazyProvider = <P extends [], E extends []>(inner: TrackProvider<P, E>) => {
+const createLazyProvider = (inner: TrackProvider<any, any>): TrackProvider<any, any> => {
     let installed: boolean = false;
-    const queue: Array<[TrackProviderEnum, P | E]> = [];
+    const queue: Array<[TrackProviderEnum, any]> = [];
 
-    // 如果初始化了则执行相应的track
-    // 反之则往队列里推一个combine，name类型，args是动态传参
-    const queueBeforeInstall = (name: TrackProviderEnum) => (...args: P | E) => {
+    const queueBeforeInstall = (name: TrackProviderEnum) => (...args: any) => {
         if (installed) {
             (inner[name] as any)(...args);
         }
@@ -22,7 +17,6 @@ const createLazyProvider = <P extends [], E extends []>(inner: TrackProvider<P, 
         }
     };
 
-    // 返回一个包含闭包的对象，执行install时，更新queue，
     return {
         install() {
             inner.install!();
@@ -43,15 +37,11 @@ const createLazyProvider = <P extends [], E extends []>(inner: TrackProvider<P, 
     };
 };
 
-// 给provider提供track的上下文，track有pageView和Event两个场景
-// pageView需要当前location和referrer，event则需要事件类型
-// collect是一个函数，用于返回过滤过的数据对象，由组件的prop决定
-// provider是一个track对象
 const createTrackerContext = (
     collect: TCollect<any>,
-    provider: TrackProvider<[TLocation], [Event]>,
-): TrackProvider<[TLocation, { path: string }], [Event]> => {
-    let currentLocation: TLocation;
+    provider: TrackProvider<[Location], [Event]>,
+): TrackProvider<[Location, { path: string }], [Event]> => {
+    let currentLocation: Location;
 
     return {
         trackPageView(location, {path}) {
@@ -79,12 +69,12 @@ const createTrackerContext = (
 
 export interface TrackProps {
     collect: TCollect<any>;
-    provider: TrackProvider;
+    provider: TrackProvider<any, any>;
 }
 
 export interface TrackState {
-    sourceProvider: TrackProvider;
-    provider: TrackProvider;
+    sourceProvider: null | TrackProvider<any, any>;
+    provider: null | TrackProvider<any, any>;
 }
 
 export default class Tracker extends React.Component<TrackProps, TrackState> {
@@ -94,8 +84,8 @@ export default class Tracker extends React.Component<TrackProps, TrackState> {
     };
 
     state: Readonly<TrackState> = {
-        sourceProvider: createEmptyTrackProvider(),
-        provider: createEmptyTrackProvider(),
+        sourceProvider: null,
+        provider: null,
     };
 
     getTracker = createMemoizer(createTrackerContext);
@@ -116,7 +106,7 @@ export default class Tracker extends React.Component<TrackProps, TrackState> {
     componentDidMount() {
         const {provider} = this.state;
 
-        provider.install!();
+        provider!.install!();
     }
 
     componentDidUpdate(prevProps: TrackProps) {
@@ -131,7 +121,7 @@ export default class Tracker extends React.Component<TrackProps, TrackState> {
     componentWillUnmount() {
         const {provider} = this.state;
 
-        provider.uninstall!();
+        provider!.uninstall!();
     }
 
     render() {

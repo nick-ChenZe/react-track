@@ -1,10 +1,10 @@
-import {TrackProvider, TrackProviderEnum} from './empty';
+import {TrackProvider, TrackProviderEnum} from '../types';
 
-declare type TChain<P extends any[], E extends any[]> = (name: TrackProviderEnum) => (...args: P | E) => void;
+declare type TChain = (name: TrackProviderEnum) => (...args: any) => void;
 
-export default <P extends any[], E extends any[]>(...providers: Array<TrackProvider<P, E>>) => {
+export default (...providers: Array<TrackProvider<any, any>>) => {
     // can not detect option rest parameter
-    const chain: TChain<P, E> = name => (...args) => providers.forEach(provider => (provider[name] as any)(...args));
+    const chain: TChain = name => (...args) => providers.forEach(provider => (provider[name] as any)(...args));
 
     return {
         install: chain(TrackProviderEnum.install),

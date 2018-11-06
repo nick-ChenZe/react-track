@@ -1,26 +1,10 @@
 import * as platform from 'platform';
-
-export interface BrowserInfo {
-    userAgent: string;
-    resolution: {
-        width: number;
-        height: number;
-    };
-    os: {
-        family: string;
-        version: string;
-    };
-    browser: {
-        name: string;
-        version: string;
-    };
-    language: string;
-}
+import {BrowserInfo, TCollect} from '../types';
 
 export default () => {
     const {ua, name, version, os} = platform.parse!(navigator.userAgent);
 
-    return (type: string): BrowserInfo | null => {
+    return ((type: string) => {
         if (type !== 'pageView') {
             return null;
         }
@@ -41,5 +25,5 @@ export default () => {
             },
             language: navigator.language,
         };
-    };
+    }) as TCollect<BrowserInfo>;
 };

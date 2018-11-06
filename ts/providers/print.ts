@@ -1,25 +1,13 @@
 import {noop} from 'lodash';
-import {TrackProvider} from './empty';
-import {Location} from 'history';
+import {TrackProvider, Location, Event} from '../types';
 
-export interface Event {
-    category: string;
-    action: string;
-    label: string;
-}
-
-export declare type TLocation = Location & { path: string};
-
-declare type TFormatUrl = (location: TLocation) => string;
-const formatURL: TFormatUrl = ({pathname, search, hash, path}) => {
+const formatURL = ({pathname, search, hash, path}: Location): string => {
     const parts = [pathname, search ? '?' + search : '', hash ? '#' + hash : ''];
 
     return parts.join('') + '(' + path + ')';
 };
 
-/* eslint-disable no-console */
-declare type TPrint = () => TrackProvider<[{ location: TLocation; referrer: TLocation }], [Event]>;
-const print: TPrint = () => {
+const print = (): TrackProvider<[{ location: Location; referrer: Location }], [Event]> => {
     return {
         install: noop,
 

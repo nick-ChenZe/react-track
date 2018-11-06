@@ -3,27 +3,30 @@ import * as PropTypes from 'prop-types';
 import {noop} from 'lodash';
 import {createMemoizer} from '../utils';
 import {Consumer} from './TrackerContext';
-import {TrackProvider} from '../providers/empty';
-import {Event} from '../providers/print';
+import {TrackProvider, Event} from '../types';
 
 declare type TUnkownFunction = (...args: any[]) => any;
-declare type TTraveEventParams = [TUnkownFunction, TrackProvider<any[], [Event]>, string, string, string];
+declare type TTrackEventParams = [TUnkownFunction, TrackProvider<any[], [Event]>, string, string, string];
 const trackEventCallback = (
-    [previousPropValue, tracker, category, action, label]: TTraveEventParams,
+    previousPropValue: TUnkownFunction,
+    tracker: TrackProvider<any[], [Event]>,
+    category: string,
+    action: string,
+    label: string,
 ) => (...args: any[]) => {
     tracker.trackEvent({category, action, label});
 
     return previousPropValue(...args);
 };
 
-const createTrackedCallback = createMemoizer<TTraveEventParams, TUnkownFunction>(trackEventCallback);
+const createTrackedCallback = createMemoizer<TTrackEventParams, TUnkownFunction>(trackEventCallback);
 
 export interface TrackEventProp {
     eventPropName: string;
     category: string;
     action: string;
     label?: string;
-    children: React.ReactNode | ((tracker: TrackProvider) => React.ReactNode);
+    children?: React.ReactNode | ((tracker: TrackProvider<any, any>) => React.ReactNode);
 }
 
 export default class TrackEvent extends React.Component<TrackEventProp> {

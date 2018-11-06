@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {withRouter, RouteComponentProps} from 'react-router-dom';
 import {Consumer} from './TrackerContext';
-import {TrackProvider} from '../providers/empty';
+import {TrackProvider} from '../types';
 import {Location} from 'history';
 import {match} from 'react-router';
 
 export interface TrackPageViewCoreProp extends RouteComponentProps {
-    tracker: TrackProvider<[Location, match]>;
+    tracker: TrackProvider<[Location, match], any>;
 }
 
 class TrackPageViewCore extends React.Component<TrackPageViewCoreProp> {

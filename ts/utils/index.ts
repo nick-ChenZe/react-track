@@ -6,7 +6,7 @@ const inputEquals = <InputType>(
         return false;
     }
 
-    /* tslint:disable */
+    /* tslint:disable-next-line */
     for (let i = 0; i < prev.length; i++) {
         if (prev[i] !== current[i]) {
             return false;
@@ -16,8 +16,6 @@ const inputEquals = <InputType>(
     return true;
 };
 
-// 返回最后一次select的结果
-// 函数返回一个闭包，当lastInput不存在，或lastInput与新参数不一致时更新select的结果
 export const createMemoizer = <InputType extends any[], ResultType>(
     select: (...args: any[]) => ResultType,
 ): ((...args: InputType) => ResultType) => {
